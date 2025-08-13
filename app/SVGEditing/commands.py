@@ -5,7 +5,7 @@ from PySide6.QtGui import QUndoCommand
 
 from renderObjects import *
 from svgEditing import Quil2VecCanvasScene
-from FileHandling.fileHandler import Quil2VecVectorPath
+from FileHandling.fileHandler import Quil2VecVectorPath, Quill2VecSaveFile
 from svg.path import Path as SVGpath
 
 ###################
@@ -41,7 +41,8 @@ class qCuttingModeCommand(QUndoCommand):
             cut_point1 = complex(self.cut_point1.x(), self.cut_point1.y())
             cut_point2 = complex(self.cut_point2.x(), self.cut_point2.y())
             self.resulting_paths = cutPath(pathSVG, cut_point1, cut_point2)
-            self.scene.parent.file
+            self.scene.parent.file:Quill2VecSaveFile
+
             self.scene.removeItem(self.original_path)
 
             for path_data_path in self.resulting_paths:

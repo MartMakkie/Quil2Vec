@@ -12,4 +12,9 @@ globalHoverPen = QPen(QColor("yellow"),1)#(255, 0, 0, 127), 1, )
 globalSelectPen = QPen(QColor("red"), 1, Qt.DashLine)
 
 # toolModes = Literal["qGroupMove", "qCpEdit", "qSegCut"]
-toolModes = Literal["qCuttingMode", "qTransformMode", "qNavmode", "qBaseMode"
+toolModes = Literal["qCuttingMode", "qTransformMode", "qNavmode", "qBaseMode", None]
+
+# globalSelectPen.setCosmetic(True)
+
+
+globalSelectBrush = globalDefaultBrush

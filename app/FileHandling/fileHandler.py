@@ -197,13 +197,13 @@ class Quil2VecVectorPath(Path):
     '''
     # to do, maybe, handle pen and colour stuff here
     def __init__(self, *segments):
-        super().__init__(*segments)
         if any([isinstance(segment, Arc) for segment in self._segments]):
             raise CommandNotSupportedError('Command Arc not supported in Vector Path')
         for seg in segments:
             if type(seg) == str:
                 logger.info(f'Segment as string in Quil2VecVectorPath: {seg}')
                 print(seg)
+        super().__init__(*segments)
     @classmethod
     def fromSVG(self, d:str):
         '''Takes SVG path (d attribute) and parses that path'''
@@ -340,24 +340,26 @@ class Quil2VecVectorPath(Path):
         # self.qpath, self.out_segments = self.to_qpath()
         pass
         # logger.info(f"Rebuilt QPainterPath: {self.qpath}, Out segments: {self.out_segments}")
+    
+    
 
-    ##################
-    # Tools handling #
-    ##################
-    def cut_path(self, cut_point1, cut_point2):
-        pass
-        '''
-        Should, somehow, have the following return structure
-        (
-            (
-                newVectorPath, newQVectorPath
-            ),
-            (
-                newVectorPath, newQVectorPath
-            )
-        )
-        Problem: circular importing... The file containing the QVectorPath classes will likely have to import this file....
-        '''
+    # ##################
+    # # Tools handling #
+    # ##################
+    # def cut_path(self, cut_point1, cut_point2):
+    #     pass
+    #     '''
+    #     Should, somehow, have the following return structure
+    #     (
+    #         (
+    #             newVectorPath, newQVectorPath
+    #         ),
+    #         (
+    #             newVectorPath, newQVectorPath
+    #         )
+    #     )
+    #     Problem: circular importing... The file containing the QVectorPath classes will likely have to import this file....
+    #     '''
 
 class Quill2VecFileLayer:
     def __init__(self, name:str, visible=True, active = False, opacity = 100):
@@ -400,6 +402,7 @@ class Quill2VecFileLayer:
     def toggle_visibility(self):
         self.visible = not self.visible
     
+
     # def add_path(self, vector_path:Quil2VecVectorPath):
     #     self.paths.append(vector_path)
 
@@ -485,6 +488,8 @@ class Quill2VecPathLayer(Quill2VecFileLayer):
     def add_path(self, vector_path:Quil2VecVectorPath):
         self.paths.append(vector_path)
 
+    def getPathLocationInFile(self, path):
+        pathIndex = self.paths
 class Quill2VecFileSettings:
     def __init__(self, background, pageFocus, zoom, coordinates):
         self.background = background

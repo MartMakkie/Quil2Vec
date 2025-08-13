@@ -85,9 +85,10 @@ class Quil2VecQSegmentItem(QGraphicsPathItem):
         self.setZValue(1)
 
 class Quil2VecQPathItem(QGraphicsPathItem):
-    def __init__(self, translator:Quil2VecVectorPath, parentCanvas, parent = None):
+    def __init__(self, translator:Quil2VecVectorPath, index, parentCanvas, parent = None):
         super().__init__(parent)
         self.toolActive:toolModes = None
+        self.index = index
         self.parentCanvas = parentCanvas
         self.translator = translator
         self._path, self.segment_data = self.translator.to_qpath()
@@ -316,10 +317,10 @@ class Quil2VecCanvasScene(QGraphicsScene):
         actLayer = self.layers[self.active_layer]
         actLayer:Quill2VecFileLayer
         logger.info('adding vectorpaths to Scene')
-        for path in actLayer.paths:
+        for i, path in enumerate(actLayer.paths):
             path:Quil2VecVectorPath
             # qpath = Quil2VecQPathItem(path)
-            self.addItem(Quil2VecQPathItem(path))
+            self.addItem(Quil2VecQPathItem(path, self, i))
     
     ################
     # Mouse events #
