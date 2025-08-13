@@ -1,0 +1,8 @@
+<RCC>
+  <qresource prefix="Bckgrnd">
+    <file>resources/background4.png</file>
+    <file>resources/background3.png</file>
+    <file>resources/background2.png</file>
+    <file>resources/background1.png</file>
+  </qresource>
+</RCC>

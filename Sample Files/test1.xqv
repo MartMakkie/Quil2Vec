@@ -1,0 +1,9 @@
+<Quill2VecFile version="0.0.1" encoding="utf-8">
+	<settings background="default" pageFocus="Heidelberg, Universit&#228;tsbibliothek, Cod. Pal. Germ.167.png" zoom="100" coordinates="" />
+	<page pageIndex="Heidelberg, Universit&#228;tsbibliothek, Cod. Pal. Germ.167.png">
+		<layer id="layer1" visible="1" active="1">
+			<path d="C 995.215,56.85 995.439,56.2961 995.693,57.269 C 995.947,58.242 995.93,59.592 995.656,60.269 C 995.382,60.9461 995.175,60.15 995.195,58.5 Z Z M 995.195,58.5" />
+		</layer>
+		<image x="0" y="0" width="1026" height="1303" path="/Users/Makkink/Library/CloudStorage/OneDrive-Personal/Documenten/PHD/coding/Quil2Vec/Sample Files/Heidelberg, Universit&#228;tsbibliothek, Cod. Pal. Germ.167.png" />
+	</page>
+</Quill2VecFile>

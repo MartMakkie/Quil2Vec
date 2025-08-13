@@ -1,0 +1,9 @@
+<Quill2VecFile version="0.0.1" encoding="utf-8">
+	<settings background="default" pageFocus="manuscripts_3369_full.jpg" zoom="100" coordinates="" />
+	<page pageIndex="manuscripts_3369_full.jpg">
+		<layer id="layer1" visible="1" active="1">
+			<path d="C 1588.1,494.347 1588.01,493.652 1588.28,493.39 C 1588.54,493.128 1589.02,493.608 1589.35,494.457 C 1590.02,496.219 1589.44,496.529 1588.46,494.933 Z Z M 1588.46,494.933" />
+		</layer>
+		<image x="0" y="0" width="2362" height="3307" path="/Users/Makkink/Library/CloudStorage/OneDrive-Personal/Documenten/PHD/coding/Quil2Vec/Sample Files/manuscripts_3369_full.jpg" />
+	</page>
+</Quill2VecFile>

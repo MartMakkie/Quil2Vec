@@ -1,0 +1,9 @@
+{
+    "files": [
+        "qmainwindow.py",
+        "form.ui",
+        "mainwindow.ui",
+        "ImportWindow.ui",
+        "openingDialog.ui"
+    ]
+}
