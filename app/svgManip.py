@@ -495,4 +495,5 @@ def displayGroups(possibleGroups):
                 displayPath.append(mem)
             print(displayPath)
             displayGroup = SVG(f'<svg><path d = \"{displayPath.d()}z\"/></svg>') 
-      
+            display(displayGroup)
+
