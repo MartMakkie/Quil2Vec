@@ -85,5 +85,4 @@ class CuttingMode(ToolMode):
             scene.update()  # trigger paintEvent
         return super().mouseMoveEvent(scene, event)
     
-class BaseToolMode(ToolMode):
-    pass
+class BaseToolMode(Tool
