@@ -5,14 +5,13 @@ from PySide6.QtCore import QLineF
 from commands import *
 from renderObjects import *
 
-
-
 class ToolMode:
     def mousePressEvent(self, scene:QGraphicsScene, event):pass
     def mouseMoveEvent(self, scene:QGraphicsScene, event):pass
     def mouseReleaseEvent(self, scene:QGraphicsScene, event):pass
 
 class TransformMode(ToolMode):
+    dragging = False
     def mousePressEvent(self, scene:QGraphicsScene, event):
         # Scene-level transform logic
         clicked_item = scene.itemAt(event.scenePos(), QTransform())
@@ -35,7 +34,7 @@ class TransformMode(ToolMode):
             for item in scene.selectedItems():
                 item.setSelected(False)
         return super().mousePressEvent(scene, event)
-        
+    
 
 class NavMode(ToolMode):
     def mousePressEvent(self, scene:QGraphicsScene, event):
