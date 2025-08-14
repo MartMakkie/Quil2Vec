@@ -513,9 +513,10 @@ class Quill2VecFileSettings:
         return ET.Element('settings', attribs)
     
 class Quill2VecPage:
-    def __init__(self, layers:dict[str:Quill2VecFileLayer], image:Quil2VecImage):
+    def __init__(self, layers:dict[str:Quill2VecFileLayer], image:Quil2VecImage, pageIndex:str):
         self.layers = layers
         self.image = image
+        self.pageIndex = pageIndex
 
         # self.settings = settings
     @classmethod
@@ -554,7 +555,7 @@ class Quill2VecSaveFile:
         encoding = root.attrib['encoding']
         pages = {}
         for page in root.findall('page'):
-            pages[page.attrib['pageIndex']] = Quill2VecPage.fromSVGFIle(page)
+            pages[page.attrib['pageIndex']] = Quill2VecPage.fromSVGFIle(page, page.attrib['pageIndex'])
         settings = Quill2VecFileSettings.fromSVGSettings(root.find('settings'))
         projectName = root.attrib['projectName']
         return self(filename,version,encoding, pages, settings, projectName)

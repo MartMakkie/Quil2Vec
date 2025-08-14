@@ -4,7 +4,7 @@ import numpy as np
 from PySide6.QtGui import QUndoCommand
 
 from renderObjects import *
-from svgEditing import Quil2VecCanvasScene
+from svgEditing import Quil2VecCanvasScene, replacePathInFile, getPathLocationInFile
 from FileHandling.fileHandler import Quil2VecVectorPath, Quill2VecSaveFile
 from svg.path import Path as SVGpath
 
@@ -28,6 +28,7 @@ class qCuttingModeCommand(QUndoCommand):
         self.cut_point2 = cut_point2
 
         self.resulting_paths = None
+        self.resulting_qPaths = None
         self.original_path_data = None
         
         self.setText("Cut Path")
@@ -41,36 +42,76 @@ class qCuttingModeCommand(QUndoCommand):
             cut_point1 = complex(self.cut_point1.x(), self.cut_point1.y())
             cut_point2 = complex(self.cut_point2.x(), self.cut_point2.y())
             self.resulting_paths = cutPath(pathSVG, cut_point1, cut_point2)
-            self.scene.parent.file:Quill2VecSaveFile
-
+            # self.scene.parent.file:Quill2VecSaveFile
+            # Replace in save-file
+            pathIndex = getPathLocationInFile(self.scene, self.original_path.translator)[-1]
+            replacePathInFile(self.original_path.translator, self.scene, self.resulting_paths)
             self.scene.removeItem(self.original_path)
-
-            for path_data_path in self.resulting_paths:
-                self.scene.addItem(path_data_path[2])
+            self.resulting_qPaths = []
+            for i, _p in enumerate(self.resulting_paths):
+                newQPath = Quil2VecQPathItem(_p,pathIndex+i-1, self.scene)
+                self.resulting_qPaths.append(newQPath)
+            # for qPath in self.resulting_qPaths:
+                self.scene.addItem(newQPath)
         else:
             # Subsequent redo - restore the cut state
+            # self.scene.removeItem(self.original_path)
+            # for path_data_path in self.resulting_paths:
+            #     self.scene.addItem(path_data_path[2])
+            pathIndex = getPathLocationInFile(self.scene, self.original_path)[-1]
+            replacePathInFile(self.original_path.translator, self.scene, self.resulting_paths)
             self.scene.removeItem(self.original_path)
-            for path_data_path in self.resulting_paths:
-                self.scene.addItem(path_data_path[2])
-    
+            self.resulting_qPaths = []
+            for i, _p in enumerate(self.resulting_paths):
+                newQPath = Quil2VecQPathItem(_p,pathIndex+i-1, self.scene)
+                self.resulting_qPaths.append(newQPath)
+            # for qPath in self.resulting_qPaths:
+                self.scene.addItem(newQPath)
+
     def undo(self):
         # Undo the original operation and restore original state
-        for path_data_path in self.resulting_paths:
-            self.scene.removeItem(path_data_path[1])
-        
+        pageIndex, layername, pathInLayerLoc = getPathLocationInFile(self.scene, self.resulting_paths[0])
+        for qPath in self.resulting_qPaths:
+            self.scene.removeItem(qPath)
         self.scene.addItem(self.original_path)
 
-class qmoveCommand(QUndoCommand):
-    pass
+        self.scene.parent().file.pages[pageIndex].layers[layername].paths[pathInLayerLoc] = self.original_path.translator
+        del self.scene.parent().file.pages[pageIndex].layers[layername].paths[pathInLayerLoc+1:pathInLayerLoc+len(self.resulting_paths)-1]
+        # for path_data_path in self.resulting_paths:
+        #     self.scene.removeItem(path_data_path[1])
+        
+        # self.scene.addItem(self.original_path)
 
+class qmoveCommand(QUndoCommand):
+    def redo(self):
+        # excecute command
+        pass
+    def undo(self):
+        # undo the original operation
+        pass
 class qPathTransformCommand(QUndoCommand):
-    pass
+    def redo(self):
+        # excecute command
+        pass
+    def undo(self):
+        # undo the original operation
+        pass
 
 class qGroupCommand(QUndoCommand):
-    pass
+    def redo(self):
+        # excecute command
+        pass
+    def undo(self):
+        # undo the original operation
+        pass
 
 class qMovePathCommand(QUndoCommand):
-    pass
+    def redo(self):
+        # excecute command
+        pass
+    def undo(self):
+        # undo the original operation
+        pass
 
 
 ####################

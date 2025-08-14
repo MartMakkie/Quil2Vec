@@ -27,10 +27,12 @@ class Quil2VecQSegmentItem(QGraphicsPathItem):
         self.setFlag(QGraphicsItem.ItemIsSelectable, True)
         self.setZValue(1)
 
+
 class Quil2VecQPathItem(QGraphicsPathItem):
-    def __init__(self, translator:Quil2VecVectorPath, parentCanvas, parent = None):
+    def __init__(self, translator:Quil2VecVectorPath, index, parentCanvas, parent = None):
         super().__init__(parent)
         self.toolActive:toolModes = None
+        self.index = index
         self.parentCanvas = parentCanvas
         self.translator = translator
         self._path, self.segment_data = self.translator.to_qpath()
@@ -85,7 +87,7 @@ class Quil2VecQPathItem(QGraphicsPathItem):
     ################
     # Mouse events #
     ################
-    
+
     def mousePressEvent(self, event):
         if self.toolActive == "qTransformMode":
             self.setupSegmentsForCpEdit()
