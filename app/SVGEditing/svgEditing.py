@@ -128,6 +128,7 @@ from PySide6.QtCore import QRectF, QLineF
 
 from FileHandling.fileHandler import Quill2VecFileLayer, Quil2VecVectorPath, Quill2VecFileLayer, Quill2VecPathLayer
 from renderObjects import *
+from toolModes import *
 
 class Quil2VecCanvasScene(QGraphicsScene):
     '''
@@ -142,7 +143,8 @@ class Quil2VecCanvasScene(QGraphicsScene):
     def __init__(self, parent = None):
         super.__init__(parent)
         # just for conveniences sake, lets make qGroupMove the default fallback tool when toolselection delegation from the toolbar does not work
-        self.selectedTool: toolModes = "qGroupMove"
+        # self.selectedTool: toolModes = "qGroupMove"
+        self.toolMode:ToolMode = BaseToolMode
         self.layers = {}
         self.pageIndex:str = None
         self.activeLayer:Quill2VecFileLayer = None # Current working layer as dict key in layers dictionary
@@ -183,6 +185,11 @@ class Quil2VecCanvasScene(QGraphicsScene):
         pass
 
     def update(self):
+        '''
+        THIS NEEDS TO BE REDONE!!!
+        THIS SHOULD NOT LOAD THE ENTIRE THING EVERYTIME
+        IT SHOULD ONLY TRIGGER A REPAINT
+        '''
         self.backUpSave()
         for item in self.items():
             logger.info('removing item from scene')
@@ -205,82 +212,106 @@ class Quil2VecCanvasScene(QGraphicsScene):
     ################
 
     def mousePressEvent(self, event):
-        # Get the item under the mouse
-        if self.selectedTool == "qTransformMode":
-            clicked_item = self.itemAt(event.scenePos(), QTransform())
+        self.toolMode.mousePressEvent(self, event)
+        # # Get the item under the mouse
+        # if self.selectedTool == "qTransformMode":
+        #     clicked_item = self.itemAt(event.scenePos(), QTransform())
 
-            # If it’s a selectable item and not already selected
-            if isinstance(clicked_item, Quil2VecQPathItem):
-                # Deselect all others
-                for item in self.selectedItems():
-                    if item is not clicked_item:
-                        item.setSelected(False)
-                clicked_item.setSelected(True)
-            else:
-                # If clicking empty space, deselect everything
-                for item in self.selectedItems():
-                    item.setSelected(False)
-        # elif self.selectedTool == "qGroupMove":
-        #     pass
-        elif self.selectedTool == "qCuttingMode":
-            if self.selected_path:
-                # mouse_x = event.position().x()
-                # mouse_y = event.position().y()
-                # Q = complex(mouse_x, mouse_y)
+        #     # If it’s a selectable item and not already selected
+        #     if isinstance(clicked_item, Quil2VecQPathItem):
+        #         # Deselect all others
+        #         for item in self.selectedItems():
+        #             if item is not clicked_item:
+        #                 item.setSelected(False)
+        #         clicked_item.setSelected(True)
+        #     elif isinstance(clicked_item, Quil2VecQSegmentItem):
+        #         # select the Quil2VecQSegmentItem
+        #         pass
+        #     elif isinstance(clicked_item, Quil2VecQEditPoint):
+        #         # start the drag event
+        #         pass
+        #     else:
+        #         # If clicking empty space, deselect everything
+        #         for item in self.selectedItems():
+        #             item.setSelected(False)
+        # # elif self.selectedTool == "qGroupMove":
+        # #     pass
+        # elif self.selectedTool == "qCuttingMode":
+        #     if self.selected_path:
+        #         # mouse_x = event.position().x()
+        #         # mouse_y = event.position().y()
+        #         # Q = complex(mouse_x, mouse_y)
 
-                # nearest_pt = closest_point_on_path(Q, self.selected_path)
-                if self.cut_point1:
-                    self.cut_point2 = self.highlight_point
-                    cut_command = qCuttingModeCommand(self, self.selected_path, self.cut_point1, self.cut_point2)
-
-                    self.selected_path.cut_path(self.cut_point1, self.cut_point2)
-                    self.cut_point1 = None
-                    self.cut_point2 = None
-                    self.cut_line = None
-                    # self.emit(Signal("cut_segment"), self.cut_point1, self.cut_point2, self.selected_path)
-                else:
-                    self.cut_point1 = self.highlight_point
+        #         # nearest_pt = closest_point_on_path(Q, self.selected_path)
+        #         if self.cut_point1:
+        #             self.cut_point2 = self.highlight_point
+        #             cut_command = qCuttingModeCommand(self, self.selected_path, self.cut_point1, self.cut_point2)
+        #             self.undo_stack.push(cut_command)
+        #             self.removeItem(self.cut_point1)
+        #             # self.selected_path.cut_path(self.cut_point1, self.cut_point2)
+        #             self.cut_point1 = None
+        #             self.cut_point2 = None
+        #             self.cut_line = None
+        #             # self.emit(Signal("cut_segment"), self.cut_point1, self.cut_point2, self.selected_path)
+        #         else:
+        #             self.cut_point1 = self.highlight_point
+        #             # change appearance of self.cut_point1 
+        #             self.addItem(self.cut_point1)
                     
-                # self.highlight_point = nearest_pt
-                self.update()  # trigger paintEvent
-        elif self.selectedTool == "qNavmode":
-            pass
-        elif self.selectedTool == "qBaseMode":
-            pass
-        # Pass event to base class to handle item selection normally
+        #         # self.highlight_point = nearest_pt
+        #         # self.update()  # trigger paintEvent
+        # elif self.selectedTool == "qNavmode":
+        #     pass
+        # elif self.selectedTool == "qBaseMode":
+        #     pass
+        # # Pass event to base class to handle item selection normally
         super().mousePressEvent(event)
 
     def mouseMoveEvent(self, event):
-        if self.selectedTool == "qTransformMode":
-            # Handle path transform
-            pass
-        elif self.selectedTool == "qGroupMove":
-            # Handle group moving
-            pass
-        elif self.selectedTool == "qCuttingMode":
-            # Handle segment cutting
-            if self.selected_path:
-                mouse_x = event.position().x()
-                mouse_y = event.position().y()
-                Q = complex(mouse_x, mouse_y)
+        self.toolMode.mouseMoveEvent(self, event)
+        # if self.selectedTool == "qTransformMode":
+        #     # Handle path transform
+        #     pass
+        # elif self.selectedTool == "qGroupMove":
+        #     # Handle group moving
+        #     pass
+        # elif self.selectedTool == "qCuttingMode":
+        #     # Handle segment cutting
+        #     if self.selected_path:
+        #         mouse_x = event.position().x()
+        #         mouse_y = event.position().y()
+        #         Q = complex(mouse_x, mouse_y)
 
-                nearest_pt = closest_point_on_path(Q, self.selected_path)
-                self.highlight_point = nearest_pt
-                if self.cut_point1:
-                    if not self.cut_line:
-                        self.cut_line = QGraphicsLineItem(QLineF(self.cut_point1, self.highlight_point))
-                        self.addItem(self.cut_line)
-                    else:
-                        self.cut_line.setLine(QLineF(self.cut_point1, self.highlight_point))
-                self.update()  # trigger paintEvent
-        elif self.selectedTool == "qNavmode":
-            pass
-        elif self.selectedTool == "qBaseMode":
-            pass
-        super().mouseMoveEvent(event)
+        #         nearest_pt = closest_point_on_path(Q, self.selected_path)
+        #         self.highlight_point = nearest_pt
+        #         if self.cut_point1:
+        #             if not self.cut_line:
+        #                 self.cut_line = QGraphicsLineItem(QLineF(self.cut_point1, self.highlight_point))
+        #                 self.addItem(self.cut_line)
+        #             else:
+        #                 self.cut_line.setLine(QLineF(self.cut_point1, self.highlight_point))
+        #         self.update()  # trigger paintEvent
+        # elif self.selectedTool == "qNavmode":
+        #     pass
+        # elif self.selectedTool == "qBaseMode":
+        #     pass
+        # super().mouseMoveEvent(event)
 
-    
-
+    def mouseReleaseEvent(self, event):
+        self.toolMode.mouseReleaseEvent(self, event)
+        # if self.selectedTool == "qTransformMode":
+        #     # Handle path transform
+        #     pass
+        # elif self.selectedTool == "qGroupMove":
+        #     # Handle group moving
+        #     pass
+        # elif self.selectedTool == "qCuttingMode":
+        #     pass
+        # elif self.selectedTool == "qNavmode":
+        #     pass
+        # elif self.selectedTool == "qBaseMode":
+        #     pass
+        return super().mouseReleaseEvent(event)
     # Undostack stuff
     def get_undo_stack(self):
         """Return the undo stack for integration with main window"""

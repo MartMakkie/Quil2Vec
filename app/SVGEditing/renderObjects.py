@@ -3,12 +3,20 @@
 ###############################################
 from PySide6.QtWidgets import QGraphicsItem, QGraphicsPathItem, QGraphicsObject
 from PySide6.QtGui import QPainterPath
-from PySide6.QtWidgets import QGraphicsEllipseItem 
-from PySide6.QtCore import QPointF
+from PySide6.QtWidgets import QGraphicsEllipseItem, QGraphics
+from PySide6.QtCore import QPointF, QRect
 
 from FileHandling.fileHandler import Quil2VecVectorPath
 from Quil2VecGlobals import *
 
+class Quil2VecQEditPoint(QGraphicsItem):
+    pass
+
+class Quil2VecQControlPoint(Quil2VecQEditPoint, QGraphicsEllipseItem):
+    pass
+
+class Quil2VecQAncherPoint(Quil2VecQEditPoint, QRect):
+    pass
 
 class Quil2VecQSegmentItem(QGraphicsPathItem):
     def __init__(self, segment_data, parent_path, index):

@@ -113,6 +113,13 @@ class qMovePathCommand(QUndoCommand):
         # undo the original operation
         pass
 
+class qDrawPathCommand(QUndoCommand):
+    def redo(self):
+        # excecute command
+        pass
+    def undo(self):
+        # undo the original operation
+        pass
 
 ####################
 # Actual functions #
